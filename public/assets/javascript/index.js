@@ -1,21 +1,26 @@
 $(document).on("click","#CommentButton",function(event){ 
+
     // display comment box and form when clicked
     if($(this).text() === "Discuss"){
         $(this).text("Hide")
         $(this).siblings("#CommentBox").removeClass("d-none").addClass("active")
         // go into the database and find this article and populate its comments
         var ArticleID = $(this).attr("data-id")
-        console.log(ArticleID);
         $.ajax({
             method: "GET",
             url: "/articles/" + ArticleID
         })
-        .done(function(data){
-            console.log(data)
+        .done(function(data){    
+            data.comments.forEach(index=>{
+                $('#CommentArea[data-id='+ ArticleID + ']').append(
+                    '<h4> <span class="text-primary">' + index.comment.name + ': '+'</span>' + index.comment.body + '</h4>'            
+                )               
+            })         
         })    
     }else{
+        $(this).siblings("#CommentBox").children("#CommentArea").empty()     
         $(this).text("Discuss")      
-        $(this).siblings("#CommentBox").addClass("d-none").removeClass("active")      
+        $(this).siblings("#CommentBox").addClass("d-none").removeClass("active")          
     }
 
 })
@@ -36,10 +41,12 @@ $(document).on("click","#SubmitComment",function(event){
     })
     // With that done
     .done(function(data) {
-        console.log(data)
-        $('#CommentArea[data-id='+ ArticleID + ']').text("thisworks")
-
-        // Also, remove the values entered in the input and textarea for note entry     
+        $('#CommentArea[data-id='+ ArticleID + ']').empty();      
+        data.comments.forEach(index=>{
+            $('#CommentArea[data-id='+ ArticleID + ']').append(
+                '<h4> <span class="text-primary">' + index.comment.name + ': '+'</span>' + index.comment.body + '</h4>'            
+            )               
+        })
     });
     $(this).siblings("form").find("#CommentNameInput").val("")
     // Value taken from note textarea

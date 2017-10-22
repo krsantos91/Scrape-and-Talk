@@ -29,11 +29,16 @@ module.exports = function(app){
   app.post("/articles/:id", function(req,res){
     db.Comment
       .create(req.body)
-      .then(newComment=>{
-        return db.Article.update({ _id: req.params.id },{ $push: {comment: newComment._id}})
+      .then(dbComment=>{
+        return db.Article.update({ _id: req.params.id },{$push: {comments: {comment: dbComment._id}}}, {new:true})
       })
       .then(returnData=>{
-        res.json(newComment)
+        db.Article
+        .findOne({_id:req.params.id})
+        .populate("comments.comment")
+        .then(dbArticle=>{
+          res.json(dbArticle)
+        })
       })
       .catch(err=>{
         res.json(err)
@@ -41,16 +46,18 @@ module.exports = function(app){
   })
 
   app.get("/articles/:id",function(req,res){
-    var id =req.params.id
-    console.log(id)
     db.Article
-    .findOne({
-      _id: id
+    .findOne({ _id: req.params.id })
+    // ..and populate all of the notes associated with it
+    .populate("comments.comment")
+    .then(dbArticle=> {
+      // If we were able to successfully find an Article with the given id, send it back to the client
+      res.json(dbArticle);
     })
-    .populate("comment")
-    .then(ArticleComment=>{
-      res.send(ArticleComment)
-    })
+    .catch(err=> {
+      // If an error occurred, send it to the client
+      res.json(err);
+    });
 
   })
 }
