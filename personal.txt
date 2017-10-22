@@ -1,0 +1,2 @@
+URI to connect mongoose and mlab:
+mongodb://heroku_141cmdhs:pt1j4sel48qqrcpe8a0tp4794k@ds125555.mlab.com:25555/heroku_141cmdhs
