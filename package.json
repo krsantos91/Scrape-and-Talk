@@ -2,7 +2,7 @@
   "name": "scrape-and-talk",
   "version": "1.0.0",
   "description": "An application that grabs articles from databases and allows users to post comments about them",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
