@@ -14,7 +14,7 @@ var axios = require("axios");
 var db = require("./models");
 
 // Establish port
-var PORT = 3000;
+var PORT = process.env.PORT || 3000;
 
 // Initialize Express
 var app = express();
@@ -38,7 +38,6 @@ app.use(express.static("public"));
 
 // Set mongoose to leverage built in JavaScript ES6 Promises
 // Connect to the Mongo DB
-
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
 
 mongoose.Promise = Promise;
@@ -46,39 +45,7 @@ mongoose.connect(MONGODB_URI, {
   useMongoClient: true
 });
 
-// // Scrape website to grab data to render to the page
-// axios.get("http://www.theringer.com/nba").then(function(response) {
-//   // Then, we load that into cheerio and save it to $ for a shorthand selector
-//   var $ = cheerio.load(response.data);
-
-//   // Now, we grab every article with this class, and do the following:
-//   $("[class=c-entry-box--compact__title]").each(function(i, element) {
-//     // Save an empty result object
-//     var result = {};
-
-//     // Add the text and href of every link, and save them as properties of the result object
-//     result.title = $(this)
-//       .children("a")
-//       .text();
-//     result.link = $(this)
-//       .children("a")
-//       .attr("href");
-//     result.summary = $(this)
-//       .parent()
-//       .children("p")
-//       .text()
-
-
-//     // Create a new Article using the `result` object built from scraping
-//     db.Article
-//     .create(result)
-//     .then(dbArticle=>{
-//       console.log("Article added to MongoDB");
-//       console.log(i);
-//     });
-//   });
-// });   
-
+// Connect to API routes
 require("./routes/api-routes.js")(app);
 
 // Start the server
