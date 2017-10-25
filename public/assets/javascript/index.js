@@ -26,9 +26,17 @@ $(document).ready(function(){
                 })         
             })    
         }else{
-            $(this).siblings("#CommentBox").children("#CommentArea").empty()     
-            $(this).html('View Comments <span class="badge badge-pill badge-warning"></span>')      
-            $(this).siblings("#CommentBox").addClass("d-none").removeClass("active")          
+            $.ajax({
+                method: "GET",
+                url: "/articles/" + ArticleID
+            })
+            .done(function(data){  
+                console.log(data) 
+                    $('#CommentButton[data-id="' + ArticleID + '"]').siblings("#CommentBox").children("#CommentArea").empty()     
+                    $('#CommentButton[data-id="' + ArticleID + '"]').html('View Comments <span class="badge badge-pill badge-warning">'+ data.comments.length + '</span>')      
+                    $('#CommentButton[data-id="' + ArticleID + '"]').siblings("#CommentBox").addClass("d-none").removeClass("active")                  
+            })             
+        
         }
 
     })
