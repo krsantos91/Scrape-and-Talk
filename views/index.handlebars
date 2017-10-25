@@ -20,7 +20,9 @@
         <div class="container">
           <h1 class="display-1 text-white">NBA Talk</h1>
           <h3 class="display-4 text-white">NBA news for the homies</h2>
-          <button class="btn btn-success" id="ScrapeButton">Check for new articles</button>
+          <div id="ScrapeContainer">
+            <button class="btn btn-success" id="ScrapeButton">Check for new articles</button>
+          </div>
         </div>
       </div>
     </header>
@@ -55,7 +57,7 @@
                     </div>
                   </div>
                 </form>   
-                <button class="btn btn-outline-success" id="SubmitComment" data-id="{{this.id}}"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+                  <button class="btn btn-outline-success" id="SubmitComment" data-id="{{this.id}}"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>                  
               </div>
             </div>
           </div>

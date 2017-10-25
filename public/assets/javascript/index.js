@@ -95,6 +95,7 @@ $(document).ready(function(){
     })
     
     $("#ScrapeButton").on("click",function(event){
+        $('#ScrapeContainer').html('<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>')
         $.get("/scrape",function(res){
             if(res === "ok"){
                 window.location.reload();       
