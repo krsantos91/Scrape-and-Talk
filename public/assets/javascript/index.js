@@ -20,7 +20,7 @@ $(document).ready(function(){
                         '<div class="CommentContainer">'+
                             '<span class="CommentName">' + index.comment.name +'</span>' + 
                             '<span class="CommentBody">: ' + index.comment.body + '</span>'+
-                            // '<i class="fa fa-trash float-right animated infinite pulse"  id="DeleteButton" data-article-id="' + ArticleID + '" data-comment-id="'+ index.comment._id + '" aria-hidden="true"></i>' +                        
+                            '<i class="fa fa-trash float-right animated infinite pulse"  id="DeleteButton" data-article-id="' + ArticleID + '" data-comment-id="'+ index.comment._id + '" aria-hidden="true"></i>' +                        
                         '</div>'  
                     )             
                 })         
@@ -58,7 +58,7 @@ $(document).ready(function(){
                     '<div class="CommentContainer">'+
                         '<span class="CommentName">' + index.comment.name +'</span>' + 
                         '<span class="CommentBody">: ' + index.comment.body + '</span>'+
-                        // '<i class="fa fa-trash float-right animated infinite pulse"  id="DeleteButton" data-article-id="' + ArticleID + '" data-comment-id="'+ index.comment._id + '" aria-hidden="true"></i>' +                        
+                        '<i class="fa fa-trash float-right animated infinite pulse"  id="DeleteButton" data-article-id="' + ArticleID + '" data-comment-id="'+ index.comment._id + '" aria-hidden="true"></i>' +                        
                     '</div>'            
                 )                
             })
@@ -68,22 +68,29 @@ $(document).ready(function(){
 
     })
 
-    // $(document).on("click","#DeleteButton",function(event){
-    //     var commentId = $(this).attr("data-comment-id");
-    //     var articleId = $(this).attr("data-article-id")
-    //     $.ajax({
-    //         method: "DELETE",
-    //         url: "deletecomment/",
-    //         data: {
-    //             commentid: commentId,
-    //             articleid: articleId
-    //         }
-    //     })
-    //     // With that done
-    //     .done(function(data) {
-    //         $('i[data-id="'+ commentId + '"]').parent().empty();      
-    //     });
-
-
-    // })
+    $(document).on("click","#DeleteButton",function(event){
+        console.log("Trying to delete")
+        var commentId = $(this).attr("data-comment-id");
+        var articleId = $(this).attr("data-article-id")
+        $.ajax({
+            method: "POST",
+            url: "/deletecomment/",
+            data: {
+                commentid: commentId,
+                articleid: articleId
+            }
+        })
+        // With that done
+        .done(function(data) {
+            $('i[data-comment-id="'+ commentId + '"]').parent().empty();      
+        });
+    })
+    
+    $("#ScrapeButton").on("click",function(event){
+        $.get("/scrape",function(res){
+            if(res === "ok"){
+                window.location.reload();       
+            }
+        })
+    })
 })

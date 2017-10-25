@@ -36,17 +36,17 @@ module.exports = function(app){
       })
   })
 
-  // app.delete("deletecomment",function(req,res){
-  //   db.Comment
-  //   .findOneAndRemove({_id:req.body.commentid})
-  //   .then(dbComment=>{
-  //     return db.Article.update({ _id: req.body.articleid },{$pull: {comments: {comment: req.body.commentid}}}, {new:true})
-  //   }).then(returnData=>{
-  //     res.json(returnData)
-  //   }).catch(err=>{
-  //     console.log(err)
-  //   })
-  // })
+  app.post("/deletecomment",function(req,res){
+    db.Comment
+    .deleteOne({_id:req.body.commentid})
+    .then(dbComment=>{
+      return db.Article.findOneAndUpdate({ _id: req.body.articleid },{$pull: {comments: {comment: req.body.commentid}}})
+    }).then(returnData=>{
+      res.json(returnData)
+    }).catch(err=>{
+      console.log(err)
+    })
+  })
 
   app.get("/articles/:id",function(req,res){
     db.Article
@@ -69,38 +69,45 @@ module.exports = function(app){
     axios.get("http://www.theringer.com/nba").then(function(response) {
       // Then, we load that into cheerio and save it to $ for a shorthand selector
       var $ = cheerio.load(response.data);
-      // Now, we grab every article with this class, and do the following:
-      $("[class=c-entry-box--compact__title]").each(function(i, element) {
-        // Save an empty result object
-        var result = {};
-        // Add the text and href of every link, and save them as properties of the result object
-        result.title = $(this)
-          .children("a")
-          .text();
-        result.link = $(this)
-          .children("a")
-          .attr("href");
-        result.summary = $(this)
-          .parent()
-          .children("p")
-          .text()
-        // Create a new Article using the `result` object built from scraping
-        db.Article
-        .count({link:result.link},(err,count)=>{
-          if(!count){
+      
+      scrapeDone();
+
+      function scrapeDone(){
+        return new Promise(function(resolve,reject){
+          // Use cheerio to grab every article from site
+          $("[class=c-entry-box--compact__title]").each(function(i, element) {
+            // Save an empty result object
+            var result = {};
+            // Add the text and href of every link, and save them as properties of the result object
+            result.title = $(this)
+              .children("a")
+              .text();
+            result.link = $(this)
+              .children("a")
+              .attr("href");
+            result.summary = $(this)
+              .parent()
+              .children("p")
+              .text()
+            // Create a new Article using the `result` object built from scraping
             db.Article
-            .create(result)
-            .then(dbArticle=>{
-              console.log("Article added to mongoDB")
-              console.log(i)
+            .count({link:result.link},(err,count)=>{
+              if(!count){
+                db.Article
+                .create(result)
+                .then(dbArticle=>{
+                  console.log("Article added to mongoDB")
+                  console.log(i)
+                })
+              }else{
+                console.log("Article already exists in mongoDB")
+                console.log(i)
+              }
             })
-          }else{
-            console.log("Article already exists in mongoDB")
-            console.log(i)
-          }
+          });
+          resolve(res.send("ok"))
         })
-      });
-      res.redirect('/')
+      }
     });  
   })
 
