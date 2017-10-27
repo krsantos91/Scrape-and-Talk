@@ -5,7 +5,10 @@ var cheerio = require('cheerio')
 module.exports = function(app){
 
   app.get("/",function(req,res){
-    db.Article.find({},function(err,found){
+    db.Article
+    .find()
+    .sort({ts:-1})
+    .exec((err,found)=>{
       if (err){
         res.send("ERROR")
       } else{
